@@ -95,7 +95,8 @@ default_random_engine randomGenerator(time(0) + time(0) + time(0) + GetTickCount
 ---
 
 Instead of finding the line count from the files, or even from the filenames I separately encoded the line count.
-``
+
+```
 const string loadItemsFile = "data/itemList52.tsv";
 const string loadSpellFile = "data/spellList13.tsv";
 const string loadEnemyFile = "data/enemyList77.tsv";
