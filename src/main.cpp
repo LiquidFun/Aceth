@@ -23,15 +23,18 @@ using namespace std;
 #include <conio.h>
 #include <windows.h>
 
-#else // Unix, add alternatives for windows programs used 
+#else // Unix, add alternatives for windows methods used elsewhere
 #include <unistd.h>
 #include <sys/ioctl.h>
 
 #include "ansicol.h"
 #include "cursor.h"
 #define FALSE false
-void CopyFile(char* from, char* to, bool discard) {
-    link(from, to);
+void CopyFile(string from, string to, bool discard) {
+    ifstream  src(from, std::ios::binary);
+    ofstream  dst(to, std::ios::binary);
+
+    dst << src.rdbuf();
 }
 void Sleep(long long ms) {
     sleep(ms/1000.0); 
@@ -340,14 +343,14 @@ void printMap() //reworked to print 15x10 field of map //REWORKED TO NOT BE LAGG
                     x++;
                 }
         cout << "        |  ";
-        if (max(playerCoord[1] - SOY, 0) == y - 0) cout << dark_white << "Your Name: " << aqua << charName << dark_white << " ";
-        if (max(playerCoord[1] - SOY, 0) == y - 1) cout << dark_white << "Your Attack: " << red << charAttack << "A" << dark_white << " ";
-        if (max(playerCoord[1] - SOY, 0) == y - 2) cout << dark_white << "Your Defense: " << green << charDefense << "D" << dark_white << " ";
-        if (max(playerCoord[1] - SOY, 0) == y - 3) cout << dark_white << "Your HP: " << yellow << charCurrHp << dark_white << "/" << yellow << charMaxHp << dark_white << " ";
-        if (max(playerCoord[1] - SOY, 0) == y - 4) cout << dark_white << "Your Mana: " << blue << charCurrMana << dark_white << "/" << blue << charMaxMana << dark_white << " ";
-        if (max(playerCoord[1] - SOY, 0) == y - 5) cout << dark_white << "Your Money: " << white << charMoney << dark_white << " ";
-        if (max(playerCoord[1] - SOY, 0) == y - 6) cout << dark_white << "Your Level: " << yellow << charLevel << dark_white << " ";
-        if (max(playerCoord[1] - SOY, 0) == y - 7) cout << dark_white << "Your XP: " << white << charXP << dark_white << "/" << white << charXPreq << dark_white << " ";
+        if (max(playerCoord[1] - SOY, 0) == y - 0) cout << dark_white << "Your Name: " << aqua << charName << dark_white << "  ";
+        if (max(playerCoord[1] - SOY, 0) == y - 1) cout << dark_white << "Your Attack: " << red << charAttack << "A" << dark_white << "  ";
+        if (max(playerCoord[1] - SOY, 0) == y - 2) cout << dark_white << "Your Defense: " << green << charDefense << "D" << dark_white << "  ";
+        if (max(playerCoord[1] - SOY, 0) == y - 3) cout << dark_white << "Your HP: " << yellow << charCurrHp << dark_white << "/" << yellow << charMaxHp << dark_white << "  ";
+        if (max(playerCoord[1] - SOY, 0) == y - 4) cout << dark_white << "Your Mana: " << blue << charCurrMana << dark_white << "/" << blue << charMaxMana << dark_white << "  ";
+        if (max(playerCoord[1] - SOY, 0) == y - 5) cout << dark_white << "Your Money: " << white << charMoney << dark_white << "  ";
+        if (max(playerCoord[1] - SOY, 0) == y - 6) cout << dark_white << "Your Level: " << yellow << charLevel << dark_white << "  ";
+        if (max(playerCoord[1] - SOY, 0) == y - 7) cout << dark_white << "Your XP: " << white << charXP << dark_white << "/" << white << charXPreq << dark_white << "   ";
         if (max(playerCoord[1] - SOY, 0) == y - 8) cout << dark_white << "In-game time: " << white << inGameTime << "   ";
         if (max(playerCoord[1] - SOY, 0) == y - 10) {cout << white << charSmallPotionCount << dark_white << " small healing potion";
             if (charSmallPotionCount > 1 || charSmallPotionCount == 0)
@@ -443,7 +446,7 @@ void refreshMap()
         if (checkTime + 5 < time(0))
         {
             allowThreads = false;
-            Sleep(50);
+            /* Sleep(50); */
             checkTime = time(0);
             printMap();
             allowThreads = true;
@@ -810,7 +813,7 @@ void defineColor(int x, int y)
     else if (mapL[x][y] == 't')settextcolor(white);
     else if (mapL[x][y] == 'i')settextcolor(dark_aqua);
     else if (mapL[x][y] == '^')settextcolor(dark_red);
-    else if (mapL[x][y] == '-')settextcolor(blue);
+    else if (mapL[x][y] == '-')settextcolor(dark_blue);
     else if (mapL[x][y] == 'r')settextcolor(gray);
     else if (mapL[x][y] == 'h')settextcolor(dark_yellow);
     else if (mapL[x][y] == 'T')settextcolor(purple);

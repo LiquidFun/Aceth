@@ -1,0 +1,13 @@
+0	Ice_Arrow	1	2	0	0	0	0	0	4	1
+0	Iron_Skin	2	0	0	0	4	0	0	3	2
+0	Fireball	3	5	0	0	0	0	0	6	3
+0	Heal		2	0	0	0	0	0	3	3	3
+0	Burning_Weapon	5	0	10	1.5	0	0	0	9	5
+0	Magic_Armor	5	0	0	0	10	1.3	5	12	6
+0	Firestorm	8	15	0	0	0	0	0	16	7
+0	Chaos		11	28	10	0	0	0	0	27	11
+0	Meditation	10	0	0	0	10	2	52	35	13
+0	Blizzard	15	74	10	0	0	0	0	49	14
+0	Frost_Nova	18	156	0	1.3	0	0	0	67	16
+0	Holy_Water	17	0	0	0	0	1.5	134	121	18
+0	Inferno		27	200	50	2	0	0	0	203	20

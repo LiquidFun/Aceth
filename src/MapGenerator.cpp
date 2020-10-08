@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <cstring>
 #include <string>
-/* #include <conio.h> */
 using namespace std;
 
 
@@ -27,10 +26,7 @@ int houseAmount = 75;
 int caveAmount = 40;
 int castleAmount = 5;
 
-
-
 int aditMap = 0;
-int myRan = time(0);
 
 string* aditMapNames;
 int* aditMapX;
@@ -63,131 +59,74 @@ void createSpawn();
 void createHouseMap();
 void createCave();
 void createCastle();
+void fillMapLToEMS();
 
 int ypr, xpr;
 
+default_random_engine randomGenerator(time(0));
+uniform_int_distribution<int> ranStart(-SIZE / 2 - 15, EMS - 1);
+uniform_int_distribution<int> ranStartL(-50, 500);
+uniform_int_distribution<int> ranCoord(1, 499);
+
 int main()
 {
-    cout << endl << "                          GENERATING WORLD" << endl;
+    cout << "──┐ GENERATING WORLD" << endl;
     aditMapNames = new string [houseAmount + caveAmount + castleAmount];
     aditMapX = new int [houseAmount + caveAmount + castleAmount];
     aditMapY = new int [houseAmount + caveAmount + castleAmount];
     memset(entireMap, '.', EMS*EMS);
-    default_random_engine randomGenerator(myRan);
-    uniform_int_distribution<int> ranStart(-SIZE / 2 - 15, EMS - 1);
-    uniform_int_distribution<int> ranStartL(-50, 500);
-    uniform_int_distribution<int> ranCoord(1, 499);
 
     //forests
+    cout << "  ├─Creating forests" << endl;
     for (int i = 0; i < forestAmount; i++)
     {
-        int xL = 0, yL = 0;
-        myRan -= 7;
         createForest();
-        int startPosX = ranStart(randomGenerator);
-        myRan -= 19;
-        int startPosY = ranStart(randomGenerator);
-        myRan -= 11;
-        int startPosXL = ranStartL(randomGenerator);
-        myRan -= 23;
-        int startPosYL = ranStartL(randomGenerator);
-        //Places a forest on the map
-        for (int y = startPosY; y < EMS; y++)
-        {
-            xL = 0;
-            for (int x = startPosX; x < EMS; x++)
-            {
-                if (mapL[xL][yL] != '.' && x >= 0 && y >= 0 && xL < SIZE && yL < SIZE)
-                {
-                    entireMap[x][y] = mapL[xL][yL];
-                }
-                xL++;
-            }
-            yL++;
-        }
+        fillMapLToEMS();
     }
+    cout << "  ├─Creating rocks" << endl;
     //rocks
     for (int i = 0; i < rockAmount; i++)
     {
         ypr = ranCoord(randomGenerator);
-        myRan -= 17;
         xpr = ranCoord(randomGenerator);
-        myRan -= 3;
         entireMap[xpr][ypr] = 'r';
     }
     //chests
+    cout << "  ├─Creating chests" << endl;
     for (int i = 0; i < chestAmount; i++)
     {
-        myRan -= 7;
         ypr = ranCoord(randomGenerator);
-        myRan -= 13;
         xpr = ranCoord(randomGenerator);
         entireMap[xpr][ypr] = 'C';
     }
     //bushes
+    cout << "  ├─Creating bushes" << endl;
     for (int i = 0; i < bushAmount; i++)
     {
         ypr = ranCoord(randomGenerator);
-        myRan -= 17;
         xpr = ranCoord(randomGenerator);
-        myRan -= 11;
         entireMap[xpr][ypr] = 'b';
     }
     //lakes
+    cout << "  ├─Creating lakes" << endl;
     for (int i = 0; i < lakeAmount; i++)
     {
-        int xL = 0, yL = 0;
-        myRan -= 7;
         createLake();
-        int startPosX = ranStart(randomGenerator);
-        myRan -= 19;
-        int startPosY = ranStart(randomGenerator);
-        myRan -= 11;
-        int startPosXL = ranStartL(randomGenerator);
-        myRan -= 23;
-        int startPosYL = ranStartL(randomGenerator);
-        //Places a forest on the map
-        for (int y = startPosY; y < EMS; y++)
-        {
-            xL = 0;
-            for (int x = startPosX; x < EMS; x++)
-            {
-                if (mapL[xL][yL] != '.' && x >= 0 && y >= 0 && xL < SIZE && yL < SIZE)
-                {
-                    entireMap[x][y] = mapL[xL][yL];
-                }
-                xL++;
-            }
-            yL++;
-        }
+        fillMapLToEMS();
     }
     //spawn
+    cout << "  ├─Creating spawn" << endl;
     createSpawn();
-    int yL = 0;
-    for (int y = EMS / 2 - SIZE / 2; y < EMS; y++)
-    {
-        int xL = 0;
-        for (int x = EMS / 2 - SIZE / 2; x < EMS; x++)
-        {
-            if (mapL[xL][yL] != '`' && x >= 0 && y >= 0 && xL < SIZE && yL < SIZE)
-            {
-                entireMap[x][y] = mapL[xL][yL];
-            }
-            xL++;
-        }
-        yL++;
-    }
-    myRan -= 27;
+    fillMapLToEMS();
+
     //spawnhouses
     int ehcX, ehcY;
     int someBodyIUsedToKnow = 212;
     for (int i = 0; i < 5; i++)
     {
         createHouseMap();
-        myRan -= 19;
         someBodyIUsedToKnow += ranCoord(randomGenerator) % 5;
         ehcX = hcX[i] + someBodyIUsedToKnow;
-        myRan -= 13;
         someBodyIUsedToKnow -= ranCoord(randomGenerator) % 5;
         ehcY = hcY[i] + someBodyIUsedToKnow;
         if (entireMap[ehcX][ehcY] != 'h' && entireMap[ehcX][ehcY] != 'Q' && entireMap[ehcX][ehcY] != 'c')
@@ -199,35 +138,18 @@ int main()
             aditHouseAmount++;
         }
     }
+    cout << "  ├─Creating villages" << endl;
     //create villages
     for (int i = 0; i < villageAmount; i++)
     {
-        int myX = ranCoord(randomGenerator) % (EMS - (SIZE / 2 + 10)), myY = ranCoord(randomGenerator) % (EMS - (SIZE / 2 + 10));
         createSpawn();
-        int yL = 0;
-        for (int y = myY; y < EMS; y++)
-        {
-            int xL = 0;
-            for (int x = myX; x < EMS; x++)
-            {
-                if (mapL[xL][yL] != '`' && x >= 0 && y >= 0 && xL < SIZE && yL < SIZE)
-                {
-                    entireMap[x][y] = mapL[xL][yL];
-                }
-                xL++;
-            }
-            yL++;
-        }
-        myRan -= 19;
+        fillMapLToEMS();
         ehcX = ranCoord(randomGenerator);
-        myRan -= 13;
         ehcY = ranCoord(randomGenerator);
         for (int i = 0; i < villageHouseAmount; i++)
         {
             createHouseMap();
-            myRan -= 19;
             ehcX += ranCoord(randomGenerator) % 5;
-            myRan -= 17;
             ehcY -= ranCoord(randomGenerator) % 5;
             if (entireMap[ehcX][ehcY] != 'h' && entireMap[ehcX][ehcY] != 'Q' && entireMap[ehcX][ehcY] != 'c')
             {
@@ -240,6 +162,7 @@ int main()
         }
     }
     //houses
+    cout << "  ├─Creating houses" << endl;
     for (int i = 0; i < houseAmount - aditHouseAmount; i++)
     {
         cont = false;
@@ -267,6 +190,7 @@ int main()
     }
 
     //caves
+    cout << "  ├─Creating caves" << endl;
     for (int i = 0; i < caveAmount; i++)
     {
         cont = false;
@@ -294,6 +218,7 @@ int main()
     }
 
     //castles
+    cout << "  ├─Creating castles" << endl;
     for (int i = 0; i < castleAmount; i++)
     {
         cont = false;
@@ -328,6 +253,7 @@ int main()
         aditMap++;
     }
 
+    cout << "  ├─Creating arctic biome" << endl;
     replaceWithSnow();
     //####
     for (int y = 0; y < EMS; y++)
@@ -353,19 +279,36 @@ int main()
         outputFile << endl;
     }
     outputFile.close();
+    cout << "──┘ GENERATION COMPLETE" << endl;
 }
 //INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//
 /*........//........//........//........//........//........//........//........//........//........//........//........//........//........//........//........//........//........//........*/
 //INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//INT MAIN//
 
+void fillMapLToEMS()
+{
+    int startPosX = ranStart(randomGenerator);
+    int startPosY = ranStart(randomGenerator);
+    for (int y = startPosY, yL = 0; y < EMS && yL < SIZE; y++, yL++)
+    {
+        for (int x = startPosX, xL = 0; x < EMS && xL < SIZE; x++, xL++)
+        {
+            /* printf("x=%d y=%d xl=%d yl=%d %c %c\n", x, y, xL, yL, entireMap[x][y], mapL[xL][yL]); */
+            if (0 <= x && x < EMS && 0 <= y && y < EMS)
+                if (0 <= xL && xL < SIZE && 0 <= yL && yL < SIZE)
+                    if (mapL[xL][yL] != '`')
+                        entireMap[x][y] = mapL[xL][yL];
+        }
+    }
+}
+
 void createForest()
 {
     posX = SIZE / 2;
     posY = SIZE / 2;
-    myRan -= 17;
-    memset(mapL, '.', SIZE * SIZE);
+    memset(mapL, '`', sizeof mapL);
+    /* memset(mapL, '.', SIZE * SIZE); */
     mapL[SIZE / 2][SIZE / 2] = 'f';
-    default_random_engine randomGenerator(myRan);
     uniform_int_distribution<int> ranStartDir(1, 4);
     uniform_int_distribution<int> ranDir(1, 5);
 
@@ -379,7 +322,8 @@ void createForest()
         if (dir == 2) posX++;
         if (dir == 3) posY++;
         if (dir == 4) posX--;
-        mapL[posX][posY] = 'f';
+        if (0 <= posX && posX < SIZE && 0 <= posY && posY < SIZE)
+            mapL[posX][posY] = 'f';
     }
 }
 
@@ -387,17 +331,14 @@ void createSpawn()
 {
     posX = SIZE / 2;
     posY = SIZE / 2;
-    myRan -= 17;
     memset(mapL, '`', SIZE * SIZE);
     mapL[SIZE / 2][SIZE / 2] = '.';
-    default_random_engine randomGenerator(myRan);
     uniform_int_distribution<int> ranStartDir(1, 4);
     uniform_int_distribution<int> ranDir(1, 6);
 
     int oldDir, dir = ranStartDir(randomGenerator);
     for (int i = 0; i < 12000; i++)
     {
-        myRan -= 17;
         oldDir = dir;
         dir = ranDir(randomGenerator);
         if (dir == 5 || dir == 6) dir = dirToCentre();
@@ -417,11 +358,9 @@ void createSpawn()
 
 void createCave()
 {
-    myRan -= 11;
     memset(entireHouseMap, '`', EMS * EMS);
     pX = EMS / 2, pY = EMS / 2;
     entireHouseMap[pX][pY] = '#';
-    default_random_engine randomGenerator(myRan);
     uniform_int_distribution<int> direction(1, 4);
     uniform_int_distribution<int> randir(1, 6);
     uniform_int_distribution<int> ranCoord(1, EMS - 1);
@@ -440,7 +379,6 @@ void createCave()
     while (pX != EMS / 2 || pY != EMS / 2)
     {
         dir = randir(randomGenerator);
-        myRan -= 11;
         if (dir == 5 || dir == 6) dir = dirToCentreEMS_One();
         if (dir == 1) pY--;
         if (dir == 2) pX++;
@@ -455,7 +393,6 @@ void createCave()
     while (pX != EMS / 2 || pY != EMS / 2)
     {
         dir = randir(randomGenerator);
-        myRan -= 11;
         if (dir == 5 || dir == 6) dir = dirToCentreEMS_Two();
         if (dir == 1) pY--;
         if (dir == 2) pX++;
@@ -469,9 +406,7 @@ void createCave()
     {
         while (true)
         {
-            myRan -= 27;
             int x = ranCoordChest(randomGenerator);
-            myRan -= 22;
             int y = ranCoordChest(randomGenerator);
             enough = 0;
             if (entireHouseMap[x][y] != '#')
@@ -597,13 +532,10 @@ void createCave()
 
 void createHouseMap()
 {
-    myRan -= 17;
     memset(entireHouseMap, '`', EMS * EMS);
-    default_random_engine randomGenerator(myRan);
     uniform_int_distribution<int> ranLength(8, 16);
     uniform_int_distribution<int> ranWidth(4, 6);
     int houseWidth = ranWidth(randomGenerator);
-    myRan -= 11;
     int houseLength = ranLength(randomGenerator);
 
     for (int y = EMS / 2; y < houseWidth + EMS / 2; y++)
@@ -702,10 +634,8 @@ void createLake()
 {
     posX = SIZE / 2;
     posY = SIZE / 2;
-    myRan -= 17;
-    memset(mapL, '.', SIZE*SIZE);
+    memset(mapL, '`', SIZE*SIZE);
     mapL[posX][posY] = '-';
-    default_random_engine randomGenerator(myRan);
     uniform_int_distribution<int> direction(1, 4);
     uniform_int_distribution<int> randir(1, 6);
     int oldDir, dir = direction(randomGenerator);
@@ -725,7 +655,6 @@ void createLake()
 
 void replaceWithSnow()
 {
-    default_random_engine randomGenerator(myRan);
     uniform_int_distribution<int> ranCoord(1, 499);
     int rY, rX;
 
@@ -765,12 +694,8 @@ void updateMapInfo()
 
 int dirToCentre()
 {
-    myRan -= 13;
-    int ch;
-    //default_random_engine randomGenerator(time(0) * time(0) * time(0) * time(0));
-    default_random_engine randomGenerator(myRan);
     uniform_int_distribution<int> chance(1, 2);
-    ch = chance(randomGenerator);
+    int ch = chance(randomGenerator);
 
 
     if (posX > SIZE / 2 && posY > SIZE / 2)
@@ -809,16 +734,13 @@ int dirToCentre()
     {
         return 1;
     }
+    return 1;
 }
 
 int dirToCentreEMS_One()
 {
-    myRan -= 19;
-    int ch = time(0) - myRan;
-    //default_random_engine randomGenerator(time(0) * time(0) * time(0) * time(0));
-    //default_random_engine randomGenerator(myRan);
-    //uniform_int_distribution<int> chance(1, 2);
-    //ch = chance(randomGenerator);
+    uniform_int_distribution<int> chance(1, 2);
+    int ch = chance(randomGenerator);
 
 
     if (pX > EMS / 2 && pY > EMS / 2)
@@ -857,12 +779,13 @@ int dirToCentreEMS_One()
     {
         return 1;
     }
+    return 1;
 }
 
 int dirToCentreEMS_Two()
 {
-    myRan -= 19;
-    int ch = time(0) + myRan;
+    uniform_int_distribution<int> chance(1, 2);
+    int ch = chance(randomGenerator);
     if (pX > EMS / 2 && pY > EMS / 2)
     {
         if (ch % 2 == 1) return 4;
@@ -899,20 +822,18 @@ int dirToCentreEMS_Two()
     {
         return 1;
     }
+    return 1;
 }
 
 void createCastle()
 {
 
-    myRan -= 17;
     memset(entireHouseMap, '`', EMS * EMS);
-    default_random_engine randomGenerator(myRan);
     uniform_int_distribution<int> ranLength(8, 20);
     uniform_int_distribution<int> ranWidth(6, 9);
     uniform_int_distribution<int> ranDir(1, 4);
     int oldRoomDir = 0, roomDir;
     int houseWidth = ranWidth(randomGenerator);
-    myRan -= 11;
     int houseLength = ranLength(randomGenerator);
     int middleCoordX = EMS / 2 + houseLength / 2, middleCoordY = EMS / 2 + houseWidth / 2;
     //Creates one room
@@ -934,9 +855,7 @@ void createCastle()
     uniform_int_distribution<int> ranLDoor(1, houseLength - 2);
 
     //responsible for placing the door
-    myRan -= 17;
     int houseWDoor = ranWDoor(randomGenerator), houseLDoor;
-    myRan -= 17;
     if (houseWDoor == 1 || houseWDoor == houseWidth - 1)
     {
         houseLDoor = ranLDoor(randomGenerator);
@@ -959,7 +878,6 @@ void createCastle()
     {
         while (true)
         {
-            myRan -= 11;
             roomDir = ranDir(randomGenerator);
             if (oldRoomDir != roomDir + 2 % 4) break;
         }
@@ -1005,9 +923,7 @@ void createCastle()
                 middleCoordX--;
             }
         }
-        myRan -= 13;
         houseWidth = ranWidth(randomGenerator);
-        myRan -= 11;
         houseLength = ranLength(randomGenerator);
         for (int y = middleCoordY - houseWidth / 2; y < houseWidth / 2 + middleCoordY; y++)
         {
