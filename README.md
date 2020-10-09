@@ -4,8 +4,13 @@ This is a project I wrote back in 2015, this was my first fairly large project I
 
 # Showcase 
 
-![](media/Screenshot.png)
+### Starting area randomly generated
+![](media/Spawn.png)
+### Exploring a cave to find chests (yellow `C`), but unfortunately we stand right in front of a skeleton (red `e`) and a biter (red `7`)
+![](media/Cave.png)
+### Starting a game and trying to attack a wolf, which is still too strong so we die and respawn
 ![](media/Menu.gif)
+### High-level gameplay of exploring a dungeon and finding the dragon guarding it's treasure
 ![](media/Dungeon.gif)
 
 # Features
@@ -13,7 +18,7 @@ This is a project I wrote back in 2015, this was my first fairly large project I
 * A map generator which creates various biomes (forests, swamps and even arctic wastelands) as well as caves, castles and villages
 * 77 different enemies which spawn in various biomes depending on the player Level
 * 20 levels the player can attain
-* An inventory system with 4 different types of gear the player can find or buy
+* An inventory system with 5 different types of gear the player can find or buy
 * A fairly simple combat system
 * Hacky async movement of enemies while idle
 * A day and night cycle which makes your view-field smaller during the night
@@ -32,19 +37,21 @@ make
 **Note that without creating maps you won't be able to create a new game**
 ```
 
+If you have a wonky color scheme in your terminal like I do where red is yellow, blue is gray and yellow is dark purple then you can use `tput init` to reset the color scheme, which makes the game colors accurate again.
+
 Alternatively just compile the `src/main.cpp` and `src/MapGenerator.cpp` files and place the executables in the cloned folder so it has access to the `saves` and `data` folders.
 
 # Guide
 
 If you do actually want to try it out, here is a short guide:
-during the first levels it's advisable to explore a lot and find treasure chests `C` which contain
-money and items. Explore all caves `c` and houses especially `h`. In the caves there are a lot of chests,
-be careful of stronger monsters though. In the houses there are potion shops `p` and item shops `S`.
+during the first levels it's advisable to explore a lot and find treasure chests (`C`) which contain
+money and items. Explore all caves (`c`) and houses especially (`h`). In the caves there are a lot of chests,
+be careful of stronger monsters though. In the houses there are potion shops (`p`) and item shops (`S`).
 Definitely check them out and buy potions frequently. Try to fight easy monsters without dying, use
-`h`, `j` and `k` for help in finding what monster you are facing. Remember to equip better items as soon
-as you get them with `i`.
+(`h`), (`j`) and (`k`) for help in finding what monster you are facing. Remember to equip better items as soon
+as you get them by pressing (`i`).
 
-# Gems found in the code
+# Funny code I found while looking at the project
 
 As mentioned previously the code is awful. I appreciate it as a reminder of how much I have improved during the years.
 
@@ -95,7 +102,7 @@ default_random_engine randomGenerator(time(0) + time(0) + time(0) + GetTickCount
 ---
 
 Instead of finding the line count from the files, or even from the filenames I separately encoded the line count.
-``
+```
 const string loadItemsFile = "data/itemList52.tsv";
 const string loadSpellFile = "data/spellList13.tsv";
 const string loadEnemyFile = "data/enemyList77.tsv";
@@ -113,3 +120,7 @@ The longest 3 lines in the file have 403, 385, 318 characters respectively. Whic
 In fact there are 23 lines with more than 200 chars.
 
 `cat src/main.cpp | awk '{if(length($0)>200)print length($0)" "$0 }' | wc -l`
+
+--- 
+
+There is a lot more stuff like this in the code, I really felt an urge to correct the stuff, but I decided against it. So it remains as a valuable history lesson for myself :)
